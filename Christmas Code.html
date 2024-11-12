@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2487.6">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p2 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<p class="p1">&lt;!DOCTYPE html&gt;</p>
+<p class="p1">&lt;html lang="en"&gt;</p>
+<p class="p1">&lt;head&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;meta charset="UTF-8"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;title&gt;Interactive Generative Art&lt;/title&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"&gt;&lt;/script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;style&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>body {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>flex-direction: column;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>justify-content: center;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background: #f5f5f5;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-family: Arial, sans-serif;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>#inputContainer, #backButton {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>display: flex;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>flex-direction: column;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>align-items: center;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 20px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>#inputText {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>width: 80%;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 1rem;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>max-width: 400px;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">        </span>#generateButton, #back {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>margin-top: 10px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>padding: 10px 20px;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>cursor: pointer;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background-color: #333;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>color: #fff;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>border: none;</p>
+<p class="p1"><span class="Apple-converted-space">            </span>font-size: 1rem;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/style&gt;</p>
+<p class="p1">&lt;/head&gt;</p>
+<p class="p1">&lt;body&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="inputContainer"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;input id="inputText" type="text" maxlength="24" placeholder="Enter up to 24 characters..." /&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button id="generateButton"&gt;Generate Artwork&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;div id="backButton" style="display: none;"&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>&lt;button id="back"&gt;Back to Input&lt;/button&gt;</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/div&gt;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;script&gt;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>let inputContainer, backButton;</p>
+<p class="p1"><span class="Apple-converted-space">        </span>let colors = [</p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Add your specific Christmas palette colors here as RGB arrays.</p>
+<p class="p1"><span class="Apple-converted-space">            </span>[26, 52, 66], [153, 204, 255], [217, 128, 189], [255, 204, 102],</p>
+<p class="p1"><span class="Apple-converted-space">            </span>[204, 255, 204], [153, 153, 255], [255, 179, 71], [255, 102, 102],</p>
+<p class="p1"><span class="Apple-converted-space">            </span>[255, 0, 0], <span class="Apple-converted-space">    </span>// Red</p>
+<p class="p1"><span class="Apple-converted-space">            </span>[255, 192, 203], // Pink</p>
+<p class="p1"><span class="Apple-converted-space">            </span>[128, 0, 128], <span class="Apple-converted-space">  </span>// Purple</p>
+<p class="p1"><span class="Apple-converted-space">            </span>[0, 128, 0], <span class="Apple-converted-space">    </span>// Green</p>
+<p class="p1"><span class="Apple-converted-space">            </span>[255, 255, 255]<span class="Apple-converted-space">  </span>// White</p>
+<p class="p1"><span class="Apple-converted-space">        </span>];</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function setup() {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>let canvas = createCanvas(1080, 1920);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>canvas.style('display', 'none'); // Initially hide the canvas</p>
+<p class="p1"><span class="Apple-converted-space">            </span>canvas.parent('inputContainer');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Select input elements</p>
+<p class="p1"><span class="Apple-converted-space">            </span>inputContainer = select('#inputContainer');</p>
+<p class="p1"><span class="Apple-converted-space">            </span>backButton = select('#backButton');</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>select('#generateButton').mousePressed(() =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>let userInput = select('#inputText').value();</p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (userInput.length &gt; 0) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>generateArtwork(userInput);</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>canvas.style('display', 'block');</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>inputContainer.style('display', 'none');</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>backButton.style('display', 'flex');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>select('#back').mousePressed(() =&gt; {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>clear();</p>
+<p class="p1"><span class="Apple-converted-space">                </span>inputContainer.style('display', 'flex');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>backButton.style('display', 'none');</p>
+<p class="p1"><span class="Apple-converted-space">                </span>select('#inputText').value(''); // Clear the input</p>
+<p class="p1"><span class="Apple-converted-space">            </span>});</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">        </span>function generateArtwork(inputText) {</p>
+<p class="p1"><span class="Apple-converted-space">            </span>background(255);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>let rngSeed = 0;</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Calculate a simple hash from the input text for seeding randomness</p>
+<p class="p1"><span class="Apple-converted-space">            </span>for (let i = 0; i &lt; inputText.length; i++) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>rngSeed += inputText.charCodeAt(i) * (i + 1);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>randomSeed(rngSeed);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Pen plotter-friendly artwork generation</p>
+<p class="p1"><span class="Apple-converted-space">            </span>strokeWeight(1);</p>
+<p class="p1"><span class="Apple-converted-space">            </span>noFill();</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>let numShapes = map(inputText.length, 1, 24, 50, 200);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>for (let i = 0; i &lt; numShapes; i++) {</p>
+<p class="p1"><span class="Apple-converted-space">                </span>let colorIndex = int(random(colors.length));</p>
+<p class="p1"><span class="Apple-converted-space">                </span>let c = color(colors[colorIndex][0], colors[colorIndex][1], colors[colorIndex][2], 200);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>stroke(c);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>let shapeType = int(random(3));</p>
+<p class="p1"><span class="Apple-converted-space">                </span>let x = random(width);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>let y = random(height);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>let size = random(50, 300);</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">                </span>if (shapeType === 0) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>// Draw circles</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>ellipse(x, y, size, size);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>} else if (shapeType === 1) {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>// Draw lines</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>let x2 = x + random(-size, size);</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>let y2 = y + random(-size, size);</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>line(x, y, x2, y2);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>} else {</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>// Draw polygons</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>beginShape();</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>let sides = int(random(3, 6));</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>for (let j = 0; j &lt; sides; j++) {</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>let angle = TWO_PI / sides * j;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>let sx = x + cos(angle) * size;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>let sy = y + sin(angle) * size;</p>
+<p class="p1"><span class="Apple-converted-space">                        </span>vertex(sx, sy);</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>}</p>
+<p class="p1"><span class="Apple-converted-space">                    </span>endShape(CLOSE);</p>
+<p class="p1"><span class="Apple-converted-space">                </span>}</p>
+<p class="p1"><span class="Apple-converted-space">            </span>}</p>
+<p class="p2"><br></p>
+<p class="p1"><span class="Apple-converted-space">            </span>// Optionally, save the generated artwork as a JPEG (uncomment the line below)</p>
+<p class="p1"><span class="Apple-converted-space">            </span>// setTimeout(() =&gt; saveCanvas("generative_art", "jpg"), 1000);</p>
+<p class="p1"><span class="Apple-converted-space">        </span>}</p>
+<p class="p1"><span class="Apple-converted-space">    </span>&lt;/script&gt;</p>
+<p class="p1">&lt;/body&gt;</p>
+<p class="p1">&lt;/html&gt;</p>
+</body>
+</html>
